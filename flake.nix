@@ -10,11 +10,9 @@
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"];
       
-      flake = {
-        homeManagerModules = {
-          default = ./homeManagerModules;
-          shell = ./homeManagerModules;
-        };
+      flake.homeManagerModules = {
+        default = import ./homeManagerModules;
+        shell = import ./homeManagerModules;
       };
     };
 }
