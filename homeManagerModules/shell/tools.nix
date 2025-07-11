@@ -31,6 +31,7 @@ in {
       shellcheck
       just # make
       yazi
+      gh # GitHub CLI
     ];
     programs = {
       git = {
