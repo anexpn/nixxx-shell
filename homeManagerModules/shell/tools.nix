@@ -26,7 +26,7 @@ in {
       glow # markdown
       sqlite
       unzip
-      cloc
+      tokei
       youplot # plot in terminal
       shellcheck
       just # make
