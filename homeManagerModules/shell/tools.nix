@@ -33,6 +33,9 @@ in {
       yazi
       gh # GitHub CLI
     ];
+    
+    # Tools script to display available tools with descriptions
+    toolsScript = pkgs.writeShellScriptBin "tools" (builtins.readFile ../../scripts/tools);
     programs = {
       git = {
         enable = true;
@@ -138,7 +141,7 @@ in {
     };
   in
     mkIf cfg.enable {
-      home.packages = packages;
+      home.packages = packages ++ [toolsScript];
       inherit programs;
     };
 }
