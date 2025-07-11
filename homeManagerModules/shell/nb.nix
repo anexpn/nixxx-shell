@@ -13,6 +13,12 @@ in {
     };
   };
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = builtins.elem "nb" (builtins.attrNames pkgs);
+        message = "nb package not available in current nixpkgs version";
+      }
+    ];
     home.packages = with pkgs; [
       nb
       w3m

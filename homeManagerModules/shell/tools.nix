@@ -9,29 +9,41 @@ with lib; let
 in {
   options = {
     shell.tools = {
-      enable = mkEnableOption "Shell tools collection";
+      enable = mkEnableOption "Shell tools collection" // {
+        description = ''
+          Enable a curated collection of modern CLI tools and development utilities.
+          This includes enhanced versions of common tools (eza for ls, bat for cat, etc.)
+          and popular development tools (git with delta, tmux, helix editor, etc.).
+        '';
+      };
     };
   };
-  config = let
+  config = mkIf cfg.enable (let
     packages = with pkgs; [
       httpie # curl
+      curl # HTTP client
       duf # df
       du-dust # du
-      tldr # man
       sd # sed
-      difftastic # diff
       lnav # browse log files
 
-      gum # interactive shell script
       glow # markdown
       sqlite
-      unzip
       tokei
-      youplot # plot in terminal
       shellcheck
       just # make
       yazi
       gh # GitHub CLI
+      
+      # Modern CLI tools
+      fd # modern find
+      jq # JSON processor
+      procs # modern ps
+      hyperfine # command benchmarking
+      choose # human-friendly cut
+      trash-cli # safe file deletion
+      ouch # universal archive tool
+      tealdeer # fast tldr client
     ];
     
     # Tools script to display available tools with descriptions
@@ -139,9 +151,15 @@ in {
         '';
       };
     };
-  in
-    mkIf cfg.enable {
-      home.packages = packages ++ [toolsScript];
-      inherit programs;
-    };
+  in {
+    assertions = [
+      {
+        assertion = pkgs.stdenv.isLinux || pkgs.stdenv.isDarwin;
+        message = "Shell tools collection only supports Linux and macOS platforms";
+      }
+    ];
+    
+    home.packages = packages ++ [toolsScript];
+    inherit programs;
+  });
 }

@@ -13,6 +13,12 @@ in {
     };
   };
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = !config.programs.nushell.enable || config.programs.nushell.enable;
+        message = "programs.nushell.extended conflicts with manually enabled programs.nushell";
+      }
+    ];
     programs.nushell = {
       enable = true;
       shellAliases = {
