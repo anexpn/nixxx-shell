@@ -47,11 +47,67 @@ Each module follows the standard Home Manager pattern:
 - `options` - Define configuration options with `mkEnableOption`
 - `config` - Implementation using `mkIf` for conditional configuration
 
-The modules are designed to be composable - users can enable specific components:
+The modules are designed to be composable with multiple configuration approaches:
+
+### Shell Configuration
 - `programs.zsh.extended.enable` - Enhanced Zsh with Oh My Zsh
 - `programs.nushell.extended.enable` - Nushell with git aliases
-- `shell.tools.enable` - Modern CLI tools collection
 - `shell.nb.enable` - Note-taking toolkit
+
+### Tool Configuration (Multiple Approaches)
+
+#### 1. Legacy Simple Mode
+```nix
+shell.tools.enable = true;  # Enables all essential tool categories
+```
+
+#### 2. Modular Category Mode
+```nix
+shell.tools = {
+  core.enable = true;        # Essential modern CLI replacements
+  development.enable = true; # Git, editors, analysis tools
+  monitoring.enable = true;  # System monitoring and performance
+  database.enable = false;   # Database and query tools (optional)
+  container.enable = false;  # Container and cloud tools (optional)
+  terminal.enable = true;    # Terminal multiplexers and productivity
+};
+```
+
+#### 3. Scenario-Based Mode
+```nix
+shell.scenarios = {
+  daily-driver.enable = true;     # Full-featured development setup
+  # OR
+  container.enable = true;        # Minimal container setup
+  # OR  
+  remote.enable = true;           # Remote server optimized
+  
+  # Language-specific add-ons
+  language-specific = {
+    rust.enable = true;
+    node.enable = true;
+    devops.enable = true;
+  };
+};
+```
+
+#### 4. Custom Tool Alternatives
+```nix
+shell.tools = {
+  core = {
+    enable = true;
+    fuzzy-finder = "skim";      # Alternative: "fzf" (default)
+    file-manager = "broot";     # Alternatives: "yazi" (default), "none"
+    pager = "less";             # Alternative: "bat" (default)
+  };
+  development = {
+    enable = true;
+    code-counter = "scc";       # Alternative: "tokei" (default)
+    editor = "none";            # Alternative: "helix" (default)
+    git-ui = "tig";             # Alternatives: "lazygit" (default), "none"
+  };
+};
+```
 
 ## Configuration Patterns
 
@@ -66,12 +122,69 @@ The flake supports multiple platforms via the `systems` attribute:
 - x86_64-linux, aarch64-linux
 - x86_64-darwin, aarch64-darwin (macOS)
 
-## Tools and Programs
+## Enhanced Tools and Discovery
 
-Key tools configured in `tools.nix`:
-- **Terminal**: starship, zellij, tmux
-- **File operations**: eza, bat, fzf, yazi
-- **Git**: git with delta, lazygit
-- **Development**: helix, direnv, just
-- **System**: btop, duf, du-dust
-- **Text processing**: sd, difftastic, ripgrep
+### Tool Categories
+
+**Core Tools** (Essential daily-use replacements):
+- **File operations**: eza (ls), bat (cat), fd (find), ripgrep (grep)
+- **System monitoring**: duf (df), du-dust (du), procs (ps)
+- **Text processing**: sd (sed), choose (cut), jq (JSON)
+- **Navigation**: fzf/skim (fuzzy finder), zoxide (smart cd)
+
+**Development Tools**:
+- **Version control**: git with delta, lazygit/tig, gh, gitleaks
+- **Editors**: helix (modal editor)
+- **Analysis**: shellcheck, tokei/scc (code counter), hyperfine
+- **Build tools**: just (make alternative), direnv
+
+**Monitoring & Network**:
+- **System**: btop, bandwhich, gping, broot
+- **HTTP**: httpie, curl
+- **Logs**: lnav
+
+**Database & Query**: sqlite, dsq, xsv
+**Container & Cloud**: dive, ctop, k9s (Linux)
+**Terminal Productivity**: starship, zellij, tmux, mcfly
+
+### Smart Discovery System
+
+#### Enhanced Tools Script
+```bash
+tools                    # Show all available tools
+tools alternatives       # Show tool alternatives and options
+tools scenarios          # Show usage scenarios (daily-driver, container, remote)
+tools categories         # Show tool categories
+tools search <keyword>   # Search for tools by keyword
+tools demo <tool>        # Show live demo of a tool
+tools config             # Show configuration examples
+```
+
+#### Automatic Project Detection
+```bash
+project-detect           # Analyze current directory for project type
+project-detect type      # Just show detected project types
+```
+
+**Smart features**:
+- Auto-detects project types (Rust, Node.js, Python, Go, Nix, Docker, Terraform)
+- Suggests relevant tools and commands
+- Provides project-specific aliases
+- Auto-runs when entering project directories (via enhanced `cd`)
+- Generates `.envrc` for Nix projects
+
+### Compatibility & Migration
+
+**Automatic aliases** for smooth transition:
+```bash
+ls → eza              cat → bat (if enabled)
+find → fd             grep → rg
+du → dust             df → duf
+ps → procs            sed → sd
+cut → choose          cd → z (zoxide)
+```
+
+**Migration assistance**:
+- Daily tips system shows modern tool alternatives
+- Context-aware suggestions based on project type
+- Progressive disclosure of advanced features

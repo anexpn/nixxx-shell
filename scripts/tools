@@ -86,6 +86,9 @@ print_tool "shellcheck" "Static analysis tool for shell scripts" "shellcheck scr
 echo -e "${GREEN}⚡  Modern CLI Tools${NC}"
 echo -e "${GREEN}─────────────────────${NC}"
 print_tool "fd" "Fast file finder (better find)" "fd pattern | fd -e rs"
+print_tool "ripgrep (rg)" "Ultra-fast grep replacement with smart defaults" "rg pattern | rg -t rust TODO"
+print_tool "skim (sk)" "Fuzzy finder alternative to fzf" "sk | echo 'items' | sk"
+print_tool "grex" "Generate regex patterns from examples" "grex 'hello' 'world' 'help'"
 print_tool "jq" "JSON processor and query tool" "cat data.json | jq '.field'"
 print_tool "procs" "Modern process viewer (better ps)" "procs | procs rust"
 print_tool "hyperfine" "Command-line benchmarking tool" "hyperfine 'command1' 'command2'"
@@ -93,6 +96,32 @@ print_tool "choose" "Human-friendly cut replacement" "echo 'a:b:c' | choose 1"
 print_tool "trash-cli" "Safe file deletion to trash" "trash file.txt"
 print_tool "ouch" "Universal archive tool (compress/decompress)" "ouch compress file.txt archive.zip | ouch decompress archive.zip"
 print_tool "tealdeer" "Fast tldr client with caching" "tldr git"
+print_tool "lemmeknow" "Identify mysterious data formats" "lemmeknow 'SGVsbG8gV29ybGQ='"
+
+# Network & Monitoring
+echo -e "${GREEN}🌐  Network & Monitoring${NC}"
+echo -e "${GREEN}─────────────────────────${NC}"
+print_tool "bandwhich" "Network bandwidth monitor by process" "bandwhich"
+print_tool "gping" "Visual ping with graph output" "gping google.com"
+print_tool "broot" "Interactive directory navigation" "br | broot"
+
+# Database & Query Tools
+echo -e "${GREEN}🗃️  Database & Query Tools${NC}"
+echo -e "${GREEN}─────────────────────────${NC}"
+print_tool "dsq" "SQL queries on JSON/CSV/any format" "dsq 'SELECT * FROM data.json WHERE id > 5'"
+print_tool "xsv" "CSV manipulation toolkit" "xsv select name,age data.csv | xsv stats"
+
+# Container & Cloud
+echo -e "${GREEN}🐳  Container & Cloud${NC}"
+echo -e "${GREEN}──────────────────────${NC}"
+print_tool "dive" "Docker image analysis and optimization" "dive nginx:latest"
+print_tool "ctop" "Container resource monitor" "ctop"
+print_tool "k9s" "Kubernetes TUI (Linux only)" "k9s"
+
+# Security Tools
+echo -e "${GREEN}🔒  Security Tools${NC}"
+echo -e "${GREEN}─────────────────${NC}"
+print_tool "gitleaks" "Git secrets and credential detection" "gitleaks detect"
 
 # Footer
 echo -e "${MAGENTA}═══════════════════════════════════════════════════════════════${NC}"
