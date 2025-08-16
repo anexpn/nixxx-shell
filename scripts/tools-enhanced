@@ -1,0 +1,294 @@
+#!/usr/bin/env bash
+
+# Enhanced Tools script - Display tools, alternatives, and configuration options
+
+set -euo pipefail
+
+# Color codes
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly BLUE='\033[0;34m'
+readonly MAGENTA='\033[0;35m'
+readonly CYAN='\033[0;36m'
+readonly NC='\033[0m' # No Color
+
+# Helper function to print colored output
+print_tool() {
+    local tool="$1"
+    local description="$2"
+    local usage="$3"
+    
+    echo -e "${CYAN}${tool}${NC}"
+    echo -e "  ${YELLOW}Description:${NC} ${description}"
+    echo -e "  ${YELLOW}Usage:${NC} ${usage}"
+    echo
+}
+
+# Helper function to print alternatives
+print_alternatives() {
+    local category="$1"
+    local default_tool="$2"
+    shift 2
+    local alternatives=("$@")
+    
+    echo -e "${BLUE}${category}${NC} (default: ${GREEN}${default_tool}${NC})"
+    for alt in "${alternatives[@]}"; do
+        if [[ "$alt" == "$default_tool" ]]; then
+            echo -e "  ✓ ${GREEN}${alt}${NC} (current)"
+        else
+            echo -e "  ○ ${alt}"
+        fi
+    done
+    echo
+}
+
+# Helper function to print scenario
+print_scenario() {
+    local scenario="$1"
+    local description="$2"
+    local tools="$3"
+    
+    echo -e "${MAGENTA}${scenario}${NC}"
+    echo -e "  ${YELLOW}Description:${NC} ${description}"
+    echo -e "  ${YELLOW}Includes:${NC} ${tools}"
+    echo
+}
+
+# Check command line arguments
+case "${1:-help}" in
+    "alternatives")
+        echo -e "${MAGENTA}═══════════════════════════════════════════════════════════════${NC}"
+        echo -e "${MAGENTA}                    TOOL ALTERNATIVES & OPTIONS${NC}"
+        echo -e "${MAGENTA}═══════════════════════════════════════════════════════════════${NC}"
+        echo
+        
+        echo -e "${GREEN}🔧  Core Tool Alternatives${NC}"
+        echo -e "${GREEN}─────────────────────────────${NC}"
+        print_alternatives "Fuzzy Finder" "fzf" "fzf" "skim"
+        print_alternatives "File Manager" "yazi" "yazi" "broot" "none"
+        print_alternatives "Pager/Cat" "bat" "bat" "less"
+        
+        echo -e "${GREEN}⚙️  Development Tool Alternatives${NC}"
+        echo -e "${GREEN}──────────────────────────────────${NC}"
+        print_alternatives "Code Counter" "tokei" "tokei" "scc"
+        print_alternatives "Editor" "helix" "helix" "none"
+        print_alternatives "Git UI" "lazygit" "lazygit" "tig" "none"
+        
+        echo -e "${YELLOW}💡 Configuration Example:${NC}"
+        echo -e "shell.tools = {"
+        echo -e "  core = {"
+        echo -e "    enable = true;"
+        echo -e "    fuzzy-finder = \"skim\";    # Use skim instead of fzf"
+        echo -e "    file-manager = \"broot\";   # Use broot instead of yazi"
+        echo -e "  };"
+        echo -e "  development = {"
+        echo -e "    enable = true;"
+        echo -e "    code-counter = \"scc\";     # Use scc instead of tokei"
+        echo -e "    git-ui = \"tig\";           # Use tig instead of lazygit"
+        echo -e "  };"
+        echo -e "};"
+        ;;
+        
+    "scenarios")
+        echo -e "${MAGENTA}═══════════════════════════════════════════════════════════════${NC}"
+        echo -e "${MAGENTA}                    USAGE SCENARIOS${NC}"
+        echo -e "${MAGENTA}═══════════════════════════════════════════════════════════════${NC}"
+        echo
+        
+        echo -e "${GREEN}🖥️  Usage Scenarios${NC}"
+        echo -e "${GREEN}──────────────────${NC}"
+        print_scenario "Daily Driver" "Full-featured setup for primary development machine" "core + development + monitoring + database + container + terminal"
+        print_scenario "Container" "Lightweight setup for containers and minimal environments" "core only"
+        print_scenario "Remote Server" "Tools optimized for remote servers and SSH sessions" "core + monitoring + terminal"
+        
+        echo -e "${GREEN}🌐  Language-Specific Add-ons${NC}"
+        echo -e "${GREEN}─────────────────────────────${NC}"
+        print_scenario "Rust" "Rust development tools" "cargo, rustc, rust-analyzer, clippy, rustfmt"
+        print_scenario "Node.js" "Node.js development tools" "nodejs, yarn, pnpm"
+        print_scenario "Python" "Python development tools" "python3, pip, virtualenv, ruff"
+        print_scenario "Go" "Go development tools" "go, golangci-lint, gopls"
+        print_scenario "DevOps" "Infrastructure and operations tools" "terraform, ansible, kubectl, helm, docker-compose"
+        
+        echo -e "${YELLOW}💡 Configuration Example:${NC}"
+        echo -e "shell.scenarios = {"
+        echo -e "  daily-driver.enable = true;     # Enable all tool categories"
+        echo -e "  language-specific = {"
+        echo -e "    rust.enable = true;          # Add Rust tools"
+        echo -e "    devops.enable = true;        # Add DevOps tools"
+        echo -e "  };"
+        echo -e "};"
+        ;;
+        
+    "categories")
+        echo -e "${MAGENTA}═══════════════════════════════════════════════════════════════${NC}"
+        echo -e "${MAGENTA}                    TOOL CATEGORIES${NC}"
+        echo -e "${MAGENTA}═══════════════════════════════════════════════════════════════${NC}"
+        echo
+        
+        echo -e "${GREEN}📦  Tool Categories${NC}"
+        echo -e "${GREEN}──────────────────${NC}"
+        print_scenario "Core" "Essential modern replacements for Unix tools" "eza, bat, fd, ripgrep, fzf, zoxide, etc."
+        print_scenario "Development" "Software development tools" "git, gh, helix, just, tokei, gitleaks, etc."
+        print_scenario "Monitoring" "System monitoring and performance" "btop, bandwhich, gping, httpie, lnav, etc."
+        print_scenario "Database" "Database and query tools" "sqlite, dsq, xsv"
+        print_scenario "Container" "Container and cloud tools" "dive, ctop, k9s"
+        print_scenario "Terminal" "Terminal multiplexers and productivity" "starship, zellij, tmux, mcfly"
+        
+        echo -e "${YELLOW}💡 Configuration Example:${NC}"
+        echo -e "shell.tools = {"
+        echo -e "  core.enable = true;             # Essential tools"
+        echo -e "  development.enable = true;      # Development tools"
+        echo -e "  monitoring.enable = false;      # Skip monitoring tools"
+        echo -e "  database.enable = true;         # Include database tools"
+        echo -e "};"
+        ;;
+        
+    "search")
+        if [[ -z "${2:-}" ]]; then
+            echo -e "${RED}Usage: tools search <keyword>${NC}"
+            exit 1
+        fi
+        
+        # Sanitize keyword - only allow alphanumeric and common safe characters
+        keyword="$2"
+        if [[ ! "$keyword" =~ ^[a-zA-Z0-9._-]+$ ]]; then
+            echo -e "${RED}Error: Invalid keyword. Use only alphanumeric characters, dots, hyphens, and underscores.${NC}"
+            exit 1
+        fi
+        echo -e "${MAGENTA}Search results for: ${CYAN}${keyword}${NC}"
+        echo -e "${MAGENTA}─────────────────────────────────────${NC}"
+        
+        # Simple grep-based search through tool descriptions
+        # This would be enhanced with actual tool metadata
+        case "$keyword" in
+            "git"|"version")
+                print_tool "git" "Version control with delta diff viewer" "git status | git diff"
+                print_tool "lazygit" "Terminal UI for Git commands" "lazygit"
+                print_tool "gh" "GitHub CLI for repo management" "gh repo view | gh pr list"
+                print_tool "gitleaks" "Git secrets and credential detection" "gitleaks detect"
+                ;;
+            "file"|"find")
+                print_tool "fd" "Fast file finder (better find)" "fd pattern | fd -e rs"
+                print_tool "eza" "Modern replacement for ls with colors and icons" "eza -la"
+                print_tool "yazi" "Terminal file manager with preview" "yazi"
+                print_tool "broot" "Interactive directory navigation" "br | broot"
+                ;;
+            "monitor"|"system")
+                print_tool "btop" "Resource monitor with interactive interface" "btop"
+                print_tool "procs" "Modern process viewer (better ps)" "procs | procs rust"
+                print_tool "bandwhich" "Network bandwidth monitor by process" "bandwhich"
+                ;;
+            *)
+                echo -e "${YELLOW}No specific matches found. Use 'tools help' for all tools.${NC}"
+                ;;
+        esac
+        ;;
+        
+    "demo")
+        if [[ -z "${2:-}" ]]; then
+            echo -e "${RED}Usage: tools demo <tool>${NC}"
+            exit 1
+        fi
+        
+        # Sanitize tool name - only allow alphanumeric and common safe characters
+        tool="$2"
+        if [[ ! "$tool" =~ ^[a-zA-Z0-9._-]+$ ]]; then
+            echo -e "${RED}Error: Invalid tool name. Use only alphanumeric characters, dots, hyphens, and underscores.${NC}"
+            exit 1
+        fi
+        echo -e "${MAGENTA}Demo for: ${CYAN}${tool}${NC}"
+        echo -e "${MAGENTA}─────────────────────${NC}"
+        
+        case "$tool" in
+            "fd")
+                echo -e "${YELLOW}Finding all .nix files:${NC}"
+                echo -e "${GREEN}$ fd -e nix${NC}"
+                if command -v fd &> /dev/null; then
+                    fd -e nix | head -5
+                    echo "..."
+                else
+                    echo "fd not installed"
+                fi
+                ;;
+            "rg")
+                echo -e "${YELLOW}Searching for 'enable' in Nix files:${NC}"
+                echo -e "${GREEN}$ rg 'enable' -t nix${NC}"
+                if command -v rg &> /dev/null; then
+                    rg 'enable' -t nix | head -3
+                    echo "..."
+                else
+                    echo "ripgrep not installed"
+                fi
+                ;;
+            "eza")
+                echo -e "${YELLOW}Modern file listing:${NC}"
+                echo -e "${GREEN}$ eza -la${NC}"
+                if command -v eza &> /dev/null; then
+                    eza -la | head -5
+                else
+                    echo "eza not installed"
+                fi
+                ;;
+            *)
+                echo -e "${YELLOW}Demo not available for ${tool}. Try: fd, rg, eza${NC}"
+                ;;
+        esac
+        ;;
+        
+    "config")
+        echo -e "${MAGENTA}═══════════════════════════════════════════════════════════════${NC}"
+        echo -e "${MAGENTA}                    CONFIGURATION EXAMPLES${NC}"
+        echo -e "${MAGENTA}═══════════════════════════════════════════════════════════════${NC}"
+        echo
+        
+        echo -e "${GREEN}🏠  Example Configurations${NC}"
+        echo -e "${GREEN}─────────────────────────${NC}"
+        
+        echo -e "${CYAN}Minimal Container Setup:${NC}"
+        echo -e "shell.scenarios.container.enable = true;"
+        echo
+        
+        echo -e "${CYAN}Full Daily Driver:${NC}"
+        echo -e "shell.scenarios = {"
+        echo -e "  daily-driver.enable = true;"
+        echo -e "  language-specific = {"
+        echo -e "    rust.enable = true;"
+        echo -e "    node.enable = true;"
+        echo -e "  };"
+        echo -e "};"
+        echo
+        
+        echo -e "${CYAN}Custom Tool Selection:${NC}"
+        echo -e "shell.tools = {"
+        echo -e "  core = {"
+        echo -e "    enable = true;"
+        echo -e "    fuzzy-finder = \"skim\";"
+        echo -e "    pager = \"less\";"
+        echo -e "  };"
+        echo -e "  development = {"
+        echo -e "    enable = true;"
+        echo -e "    code-counter = \"scc\";"
+        echo -e "    editor = \"none\";"
+        echo -e "  };"
+        echo -e "  database.enable = true;"
+        echo -e "};"
+        ;;
+        
+    *)
+        # Default help - show the original tools overview
+        script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+        exec "${script_dir}/tools"
+        ;;
+esac
+
+echo -e "${MAGENTA}═══════════════════════════════════════════════════════════════${NC}"
+echo -e "${YELLOW}💡 Available Commands:${NC}"
+echo -e "  • ${CYAN}tools${NC}                    - Show all available tools"
+echo -e "  • ${CYAN}tools alternatives${NC}       - Show tool alternatives and options"
+echo -e "  • ${CYAN}tools scenarios${NC}          - Show usage scenarios"
+echo -e "  • ${CYAN}tools categories${NC}         - Show tool categories"
+echo -e "  • ${CYAN}tools search <keyword>${NC}   - Search for tools by keyword"
+echo -e "  • ${CYAN}tools demo <tool>${NC}        - Show live demo of a tool"
+echo -e "  • ${CYAN}tools config${NC}             - Show configuration examples"
+echo -e "${MAGENTA}═══════════════════════════════════════════════════════════════${NC}"

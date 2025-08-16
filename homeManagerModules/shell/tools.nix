@@ -7,159 +7,133 @@
 with lib; let
   cfg = config.shell.tools;
 in {
+  imports = [
+    ./tools-core.nix
+    ./tools-development.nix
+    ./tools-monitoring.nix
+    ./tools-database.nix
+    ./tools-container.nix
+    ./tools-terminal.nix
+    ./tools-scenarios.nix
+  ];
+  
   options = {
     shell.tools = {
       enable = mkEnableOption "Shell tools collection" // {
         description = ''
           Enable a curated collection of modern CLI tools and development utilities.
-          This includes enhanced versions of common tools (eza for ls, bat for cat, etc.)
-          and popular development tools (git with delta, tmux, helix editor, etc.).
+          This is a legacy option that enables all tool categories for compatibility.
+          For fine-grained control, use individual tool categories instead.
         '';
+      };
+      
+      # New modular options
+      core = {
+        enable = mkOption {
+          type = types.bool;
+          default = cfg.enable;
+          description = "Enable core shell tools (essential replacements)";
+        };
+      };
+      
+      development = {
+        enable = mkOption {
+          type = types.bool;
+          default = cfg.enable;
+          description = "Enable development tools";
+        };
+      };
+      
+      monitoring = {
+        enable = mkOption {
+          type = types.bool;
+          default = cfg.enable;
+          description = "Enable system monitoring tools";
+        };
+      };
+      
+      database = {
+        enable = mkOption {
+          type = types.bool;
+          default = false;
+          description = "Enable database and query tools";
+        };
+      };
+      
+      container = {
+        enable = mkOption {
+          type = types.bool;
+          default = false;
+          description = "Enable container and cloud tools";
+        };
+      };
+      
+      terminal = {
+        enable = mkOption {
+          type = types.bool;
+          default = cfg.enable;
+          description = "Enable terminal multiplexers and productivity tools";
+        };
       };
     };
   };
-  config = mkIf cfg.enable (let
-    packages = with pkgs; [
-      httpie # curl
-      curl # HTTP client
-      duf # df
-      du-dust # du
-      sd # sed
-      lnav # browse log files
-
-      glow # markdown
-      sqlite
-      tokei
-      shellcheck
-      just # make
-      yazi
-      gh # GitHub CLI
+  config = mkMerge [
+    # Legacy compatibility - when shell.tools.enable is used, enable all categories
+    (mkIf cfg.enable {
+      shell.tools = {
+        core.enable = mkDefault true;
+        development.enable = mkDefault true;
+        monitoring.enable = mkDefault true;
+        terminal.enable = mkDefault true;
+        # Optional categories remain disabled by default
+        database.enable = mkDefault false;
+        container.enable = mkDefault false;
+      };
+    })
+    
+    # Tools script and common configuration
+    (mkIf (cfg.core.enable || cfg.development.enable || cfg.monitoring.enable || cfg.terminal.enable || cfg.database.enable || cfg.container.enable) {
+      assertions = [
+        {
+          assertion = pkgs.stdenv.isLinux || pkgs.stdenv.isDarwin;
+          message = "Shell tools collection only supports Linux and macOS platforms";
+        }
+        
+        # Platform-specific tool validation
+        {
+          assertion = !cfg.container.enable || pkgs.stdenv.isLinux || (!pkgs.stdenv.isLinux -> 
+            (builtins.trace "Warning: Container tools (k9s) are Linux-only, some tools will be unavailable on macOS" true));
+          message = "Container tools category includes Linux-specific tools that won't be available on other platforms";
+        }
+        
+        # Scenario conflict validation
+        {
+          assertion = let
+            scenarios = with config.shell.scenarios; [
+              daily-driver.enable
+              container.enable  
+              remote.enable
+            ];
+            enabledScenarios = builtins.filter (x: x) scenarios;
+          in (builtins.length enabledScenarios) <= 1;
+          message = "Only one scenario can be enabled at a time (daily-driver, container, or remote)";
+        }
+        
+        # Core tools dependency validation
+        {
+          assertion = !cfg.development.enable || cfg.core.enable;
+          message = "Development tools require core tools to be enabled. Enable shell.tools.core.enable = true";
+        }
+        
+        # Basic configuration validation - tool alternative validation is handled by individual modules
+      ];
       
-      # Modern CLI tools
-      fd # modern find
-      jq # JSON processor
-      procs # modern ps
-      hyperfine # command benchmarking
-      choose # human-friendly cut
-      trash-cli # safe file deletion
-      ouch # universal archive tool
-      tealdeer # fast tldr client
-    ];
-    
-    # Tools script to display available tools with descriptions
-    toolsScript = pkgs.writeShellScriptBin "tools" (builtins.readFile ../../scripts/tools);
-    programs = {
-      git = {
-        enable = true;
-        delta.enable = true;
-        extraConfig = {
-          credential.helper = "store";
-        };
-      };
-      starship = {
-        enable = true;
-      };
-      eza = {
-        enable = true;
-      };
-      bat = {
-        enable = true;
-        config = {theme = "TwoDark";};
-      };
-      fzf = {
-        enable = true;
-        defaultCommand = "rg --files --hidden --glob '!.git'";
-        defaultOptions = ["--height=40%" "--layout=reverse" "--border" "--margin=1" "--padding=1"];
-      };
-      mcfly = {
-        enable = true;
-        keyScheme = "vim";
-      };
-      direnv = {
-        enable = true;
-        nix-direnv.enable = true;
-      };
-      zellij = {
-        enable = true;
-        settings = {
-          pane_frames = false;
-          default_mode = "locked";
-          # default_layout = "compact";
-          theme = "catppuccin-frappe";
-          themes.catppuccin-frappe = {
-            bg = "#626880";
-            fg = "#c6d0f5";
-            red = "#e78284";
-            green = "#a6d189";
-            blue = "#8caaee";
-            yellow = "#e5c890";
-            magenta = "#f4b8e4";
-            orange = "#ef9f76";
-            cyan = "#99d1db";
-            black = "#292c3c";
-            white = "#c6d0f5";
-          };
-        };
-      };
-      helix = {
-        enable = true;
-        settings = {
-          theme = "catppuccin_frappe";
-          editor = {
-            lsp.display-messages = true;
-          };
-        };
-      };
-      btop = {
-        enable = true;
-      };
-      lazygit = {
-        enable = true;
-      };
-      pandoc = {
-        enable = true;
-      };
-      zoxide = {
-        enable = true;
-      };
-      tmux = {
-        enable = true;
-        terminal = "screen-256color";
-        escapeTime = 10;
-        plugins = with pkgs; [
-          tmuxPlugins.cpu
-          {
-            plugin = tmuxPlugins.resurrect;
-            extraConfig = "set -g @resurrect-strategy-nvim 'session'";
-          }
-          {
-            plugin = tmuxPlugins.continuum;
-            extraConfig = ''
-              set -g @continuum-restore 'on'
-              set -g @continuum-save-interval '60'
-            '';
-          }
-          {
-            plugin = tmuxPlugins.catppuccin;
-            extraConfig = ''
-              set -g @catppuccin_flavour 'frappe'
-            '';
-          }
-        ];
-        extraConfig = ''
-          set-option -sa terminal-features ',xterm-256color:RGB'
-        '';
-      };
-    };
-  in {
-    assertions = [
-      {
-        assertion = pkgs.stdenv.isLinux || pkgs.stdenv.isDarwin;
-        message = "Shell tools collection only supports Linux and macOS platforms";
-      }
-    ];
-    
-    home.packages = packages ++ [toolsScript];
-    inherit programs;
-  });
+      # Enhanced tools and project detection scripts
+      home.packages = [
+        (pkgs.writeShellScriptBin "tools" (builtins.readFile ../../scripts/tools))
+        (pkgs.writeShellScriptBin "tools-enhanced" (builtins.readFile ../../scripts/tools-enhanced))
+        (pkgs.writeShellScriptBin "project-detect" (builtins.readFile ../../scripts/project-detect))
+      ];
+    })
+  ];
 }
