@@ -28,7 +28,6 @@ in {
       
       # HTTP Tools
       httpie # user-friendly HTTP client
-      curl # traditional HTTP client
       
       # Log Analysis
       lnav # log file navigator

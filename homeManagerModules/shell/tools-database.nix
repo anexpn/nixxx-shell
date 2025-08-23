@@ -26,8 +26,6 @@ in {
       dsq # SQL queries on JSON/CSV/etc
       xsv # CSV toolkit
       
-      # Already included in core but important for data work
-      jq # JSON processor (if not in core)
     ];
   };
 }

@@ -27,54 +27,7 @@ in {
         '';
       };
       
-      # New modular options
-      core = {
-        enable = mkOption {
-          type = types.bool;
-          default = cfg.enable;
-          description = "Enable core shell tools (essential replacements)";
-        };
-      };
       
-      development = {
-        enable = mkOption {
-          type = types.bool;
-          default = cfg.enable;
-          description = "Enable development tools";
-        };
-      };
-      
-      monitoring = {
-        enable = mkOption {
-          type = types.bool;
-          default = cfg.enable;
-          description = "Enable system monitoring tools";
-        };
-      };
-      
-      database = {
-        enable = mkOption {
-          type = types.bool;
-          default = false;
-          description = "Enable database and query tools";
-        };
-      };
-      
-      container = {
-        enable = mkOption {
-          type = types.bool;
-          default = false;
-          description = "Enable container and cloud tools";
-        };
-      };
-      
-      terminal = {
-        enable = mkOption {
-          type = types.bool;
-          default = cfg.enable;
-          description = "Enable terminal multiplexers and productivity tools";
-        };
-      };
     };
   };
   config = mkMerge [

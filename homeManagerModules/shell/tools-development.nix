@@ -50,7 +50,6 @@ in {
       
       # Documentation
       glow # markdown viewer
-      pandoc # document converter
       tealdeer # fast tldr client
       
       # Data Analysis

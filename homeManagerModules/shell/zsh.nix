@@ -29,12 +29,6 @@ in {
     };
   };
   config = mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = !config.programs.zsh.enable;
-        message = "programs.zsh.extended conflicts with manually enabled programs.zsh. Disable programs.zsh.enable first.";
-      }
-    ];
     programs.zsh = mkMerge [
       {
         enable = true;

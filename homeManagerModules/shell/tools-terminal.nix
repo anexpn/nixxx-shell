@@ -19,8 +19,6 @@ in {
   };
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      # Alternative fuzzy finder
-      skim # alternative to fzf
     ];
     
     programs = {

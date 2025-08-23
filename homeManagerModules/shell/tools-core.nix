@@ -57,6 +57,9 @@ in {
       # Navigation & Search
       zoxide # better cd
       
+      # HTTP Tools
+      curl # traditional HTTP client
+      
       # File Management
       trash-cli # safe deletion
       ouch # universal archive tool
