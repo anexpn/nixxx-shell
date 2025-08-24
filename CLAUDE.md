@@ -10,13 +10,19 @@ This is a Nix flake that provides modular shell configuration for development en
 
 The project follows a modular structure with Home Manager modules:
 
-- `flake.nix` - Main flake definition with cross-platform support
-- `homeManagerModules/` - Contains all Home Manager modules
+- `flake.nix` - Main flake definition with cross-platform support and dev shells
+- `homeModules/` - Contains all Home Manager modules (note: renamed from homeManagerModules)
+  - `default.nix` - Root module that imports shell modules
   - `shell/default.nix` - Imports all shell-related modules
   - `shell/zsh.nix` - Extended Zsh configuration with Oh My Zsh
   - `shell/nushell.nix` - Extended Nushell with git aliases and custom functions
-  - `shell/tools.nix` - Collection of modern CLI tools and programs
+  - `shell/tools.nix` - Main tools module with legacy simple mode
+  - `shell/tools-*.nix` - Modular tool category modules (core, development, monitoring, etc.)
+  - `shell/tools-scenarios.nix` - Scenario-based tool configurations
   - `shell/nb.nix` - Note-taking tools and utilities
+- `scripts/` - Utility scripts for tool discovery and project detection
+  - `tools` - Enhanced tools overview and discovery script
+  - `project-detect` - Smart project type detection and tool suggestions
 
 ## Key Commands
 
@@ -27,6 +33,15 @@ nix flake check
 
 # Show flake info
 nix flake show
+
+# Test in development shell (includes all tools)
+nix develop
+
+# Test with just core tools
+nix develop .#core
+
+# Run built-in test script
+test-tools
 ```
 
 ### Development Workflow
@@ -39,6 +54,23 @@ nix build .#homeManagerModules.default
 
 # Check syntax of Nix files
 nix-instantiate --parse <file.nix>
+
+# Test module changes locally
+nix develop --impure
+```
+
+### Script Testing
+```bash
+# Test enhanced tools discovery
+tools
+tools alternatives
+tools scenarios
+tools categories
+
+# Test project detection
+project-detect
+project-detect type
+project-detect help
 ```
 
 ## Module Structure
@@ -188,3 +220,38 @@ cut → choose          cd → z (zoxide)
 - Daily tips system shows modern tool alternatives
 - Context-aware suggestions based on project type
 - Progressive disclosure of advanced features
+
+## Development Environment
+
+### Built-in Test Shells
+
+The flake provides two development shells for testing:
+
+1. **Default Shell** (`nix develop`):
+   - Full tool suite with core, development, monitoring, and terminal tools
+   - Includes test scripts: `test-tools`, `tools`, `project-detect`
+   - Pre-configured aliases for modern CLI tools
+   - Useful for comprehensive testing
+
+2. **Core Shell** (`nix develop .#core`):
+   - Minimal setup with just core modern CLI replacements
+   - Good for testing basic functionality
+   - Lighter resource usage
+
+### Module Development Patterns
+
+When adding new modules or tools:
+
+1. **Tool Categories**: Add to appropriate `tools-*.nix` file (core, development, monitoring, etc.)
+2. **Configuration Options**: Use `mkEnableOption` for boolean toggles, `lib.mkOption` for complex options
+3. **Conditional Logic**: Wrap configurations in `mkIf cfg.enable` blocks
+4. **Cross-Platform**: Consider platform-specific tools using `lib.optionals pkgs.stdenv.isLinux`
+5. **Alternatives**: Support tool alternatives via enum options where appropriate
+
+### Script Integration
+
+Scripts in `/scripts/` are embedded into development shells and can be tested directly:
+- Scripts use bash with `set -euo pipefail` for strict error handling
+- Color output using ANSI codes for better UX
+- Structured help systems with `command help` pattern
+- Project detection uses file-based heuristics for accuracy
