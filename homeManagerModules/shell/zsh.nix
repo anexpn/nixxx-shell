@@ -32,7 +32,7 @@ in {
     programs.zsh = mkMerge [
       {
         enable = true;
-        initExtra = ''
+        initContent = ''
           # Daily tool tip - show once per day
           show_daily_tip() {
             local tip_file="$HOME/.cache/nixxx-shell-tip"
