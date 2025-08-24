@@ -22,6 +22,9 @@ in {
       # Container Analysis
       dive # docker image analysis
       ctop # container resource monitor
+      
+      # Container Runtimes
+      podman # daemonless container engine
     ] ++ lib.optionals pkgs.stdenv.isLinux [
       # Linux-specific container tools
       k9s # kubernetes TUI
