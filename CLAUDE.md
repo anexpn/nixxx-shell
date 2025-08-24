@@ -10,7 +10,7 @@ This is a Nix flake that provides modular shell configuration for development en
 
 The project follows a modular structure with Home Manager modules:
 
-- `flake.nix` - Main flake definition with cross-platform support and dev shells
+- `flake.nix` - Main flake definition with cross-platform support
 - `homeModules/` - Contains all Home Manager modules (note: renamed from homeManagerModules)
   - `default.nix` - Root module that imports shell modules
   - `shell/default.nix` - Imports all shell-related modules
@@ -33,15 +33,6 @@ nix flake check
 
 # Show flake info
 nix flake show
-
-# Test in development shell (includes all tools)
-nix develop
-
-# Test with just core tools
-nix develop .#core
-
-# Run built-in test script
-test-tools
 ```
 
 ### Development Workflow
@@ -50,16 +41,15 @@ test-tools
 nix flake update
 
 # Build specific output
-nix build .#homeManagerModules.default
+nix build .#homeModules.default
 
 # Check syntax of Nix files
 nix-instantiate --parse <file.nix>
-
-# Test module changes locally
-nix develop --impure
 ```
 
 ### Script Testing
+Scripts can be tested by including them in your shell configuration:
+
 ```bash
 # Test enhanced tools discovery
 tools
@@ -223,21 +213,6 @@ cut → choose          cd → z (zoxide)
 
 ## Development Environment
 
-### Built-in Test Shells
-
-The flake provides two development shells for testing:
-
-1. **Default Shell** (`nix develop`):
-   - Full tool suite with core, development, monitoring, and terminal tools
-   - Includes test scripts: `test-tools`, `tools`, `project-detect`
-   - Pre-configured aliases for modern CLI tools
-   - Useful for comprehensive testing
-
-2. **Core Shell** (`nix develop .#core`):
-   - Minimal setup with just core modern CLI replacements
-   - Good for testing basic functionality
-   - Lighter resource usage
-
 ### Module Development Patterns
 
 When adding new modules or tools:
@@ -250,7 +225,7 @@ When adding new modules or tools:
 
 ### Script Integration
 
-Scripts in `/scripts/` are embedded into development shells and can be tested directly:
+Scripts in `/scripts/` can be included in shell configurations:
 - Scripts use bash with `set -euo pipefail` for strict error handling
 - Color output using ANSI codes for better UX
 - Structured help systems with `command help` pattern
