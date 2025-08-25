@@ -56,6 +56,9 @@ in {
       lemmeknow # identify data formats
       grex # regex generator
       
+      # AI Tools
+      aichat # AI chat interface
+      
       # Performance
       hyperfine # benchmarking
     ] ++ 
