@@ -77,6 +77,9 @@ in {
       {
         eza.enable = true;
         zoxide.enable = true;
+        man = {
+          generateCaches = true;
+        };
       }
       
       # Conditional program configurations
@@ -85,13 +88,21 @@ in {
           enable = true;
           config = {theme = "TwoDark";};
         };
+        zsh = {
+          initContent = ''
+            # Global aliases for help output with bat syntax highlighting
+            alias -g -- -h='-h 2>&1 | bat --language=help --style=plain'
+            alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
+          '';
+        };
       })
       
       (mkIf (cfg.fuzzy-finder == "fzf") {
         fzf = {
           enable = true;
           defaultCommand = "rg --files --hidden --glob '!.git'";
-          defaultOptions = ["--height=40%" "--layout=reverse" "--border" "--margin=1" "--padding=1"];
+          defaultOptions = ["--height=40%" "--layout=reverse" "--border" "--margin=1" "--padding=1"] ++ 
+            (optionals (cfg.pager == "bat") ["--preview" "bat --color=always --style=numbers --line-range=:500 {}"]);
         };
       })
     ];
@@ -122,6 +133,7 @@ in {
       (mkIf (cfg.pager == "bat") {
         cat = "bat --paging=never";
         less = "bat";
+        man = "MANPAGER=\"sh -c 'awk '\\''{ gsub(/\\x1B\\[[0-9;]*m/, \\\"\\\", \\$0); gsub(/.\\x08/, \\\"\\\", \\$0); print }'\\'' | bat -p -lman'\" man";
       })
     ];
   };
