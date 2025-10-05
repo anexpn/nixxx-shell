@@ -200,11 +200,12 @@ project-detect type      # Just show detected project types
 **Automatic aliases** for smooth transition:
 ```bash
 ls → eza              cat → bat (if enabled)
-find → fd             grep → rg
 du → dust             df → duf
 ps → procs            sed → sd
-cut → choose          cd → z (zoxide)
+cut → choose
 ```
+
+**Note**: `find`, `grep`, and `cd` are NOT aliased to preserve traditional behavior. Use `fd`, `rg`, and `z` explicitly if desired.
 
 **Migration assistance**:
 - Daily tips system shows modern tool alternatives

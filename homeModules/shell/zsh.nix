@@ -118,23 +118,6 @@ in {
             show_daily_tip
           fi
           
-          # Smart project detection on directory change
-          smart_cd() {
-            builtin cd "$@"
-            
-            # Only run project detection in interactive mode and if tools are available
-            if [[ -o interactive ]] && command -v project-detect &>/dev/null; then
-              # Check if this looks like a project directory
-              if [[ -f "flake.nix" || -f "Cargo.toml" || -f "package.json" || -f "pyproject.toml" || -f "go.mod" || -f "main.tf" ]]; then
-                echo
-                project-detect detect . 2>/dev/null || true
-              fi
-            fi
-          }
-          
-          # Override cd with smart version
-          alias cd='smart_cd'
-          
           if test -f ~/.zshrc.local; then
             . ~/.zshrc.local
           fi

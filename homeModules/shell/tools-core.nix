@@ -132,8 +132,6 @@ in {
         # File operations
         ls = "eza";
         ll = "eza -la";
-        find = "fd";
-        grep = "rg";
 
         # System monitoring
         du = "dust";
@@ -143,9 +141,6 @@ in {
         # Text processing
         sed = "sd";
         cut = "choose";
-
-        # Navigation
-        cd = "z"; # zoxide smart cd
       }
 
       # Conditional aliases based on choices
