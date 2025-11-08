@@ -31,8 +31,9 @@ fi
 | Git | Jujutsu | Notes |
 |-----|---------|-------|
 | `git status` | `jj st` or `jj status` | Shows working copy status |
-| `git add .` + `git commit -m "msg"` | `jj describe -m "msg"` | No staging; adds message to current change |
-| `git commit -m "msg"` (start new) | `jj new` | Creates new change on top of current |
+| `git add .` + `git commit -m "msg"` | `jj commit -m "msg"` | Commits current changes and creates new change on top |
+| `git commit -m "msg"` (two-step) | `jj describe -m "msg"` + `jj new` | Alternative: describe then create new change |
+| `git commit -m "msg"` (start new) | `jj new` | Creates new empty change on top of current |
 | `git diff` | `jj diff` | Shows diff of working copy |
 | `git diff <file>` | `jj diff <file>` | Shows diff of specific file |
 | `git log` | `jj log` | Shows change history |

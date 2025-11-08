@@ -59,24 +59,32 @@ fi
 
 ### Making Changes
 
-1. **Edit files** (automatically tracked - no `add` needed)
+There are two workflows depending on whether you have existing changes:
 
-2. **Describe the change:**
+**Workflow 1: Commit existing changes** (when `jj status` shows changes)
 ```bash
-jj describe -m "Implement feature X"
-```
-
-3. **Review changes:**
-```bash
+# 1. Edit files (automatically tracked - no `add` needed)
+# 2. Review changes
 jj diff              # See all changes
-jj diff <file>       # See specific file
 jj status            # Check status
+
+# 3. Commit the changes
+jj commit -m "Implement feature X"   # Describe and create new change on top
 ```
 
-4. **Create next change:**
+**Workflow 2: Start new change first** (when `jj status` shows no changes)
 ```bash
-jj new               # Start new change on top
+jj new                              # Start new empty change
+# ... edit files ...
+jj describe -m "Implement feature"  # Add description as you work
+jj new                              # When done, create next change
 ```
+
+**When user says "commit":**
+- If `jj status` shows changes: use `jj commit -m "message"`
+- If current change is already described: use `jj new` to start next change
+
+**Note**: `jj commit` = `jj describe` + `jj new` in one command.
 
 ### Viewing History
 
@@ -284,12 +292,16 @@ jj op undo
 ### Feature Development
 
 ```bash
-# Start feature
+# Option 1: Commit existing work
+# ... edit files ...
+jj commit -m "Start feature X"
+# ... work more ...
+jj commit -m "Add tests for X"
+
+# Option 2: Start new changes first
 jj new
 jj describe -m "Start feature X"
 # ... work on feature ...
-
-# Create more changes as needed
 jj new
 jj describe -m "Add tests for X"
 # ... add tests ...
