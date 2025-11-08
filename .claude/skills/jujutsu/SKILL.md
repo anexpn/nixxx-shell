@@ -105,14 +105,21 @@ Jujutsu works seamlessly with git remotes using `jj git` commands:
 # Fetch from remote
 jj git fetch
 
-# Push to remote
-jj git push
+# Push to remote (must move bookmark first!)
+jj bookmark set <bookmark-name> -r <revision>   # Move bookmark to commit you want to push
+jj git push                                      # Push all bookmarks
 
 # Push specific bookmark (branch)
 jj git push --bookmark <name>
 
 # Push with force (use carefully)
 jj git push --force
+```
+
+**IMPORTANT**: Before pushing, you must move the bookmark to the commit you want as the head:
+```bash
+jj bookmark set master -r @-    # Move master to parent of working copy
+jj git push                      # Now push
 ```
 
 ### Colocated Repositories
