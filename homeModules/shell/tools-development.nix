@@ -41,6 +41,7 @@ in {
       # Version Control
       gh # GitHub CLI
       gitleaks # Git secrets detection
+      jujutsu # Modern VCS compatible with Git
       
       # Code Analysis
       shellcheck # shell script analysis
