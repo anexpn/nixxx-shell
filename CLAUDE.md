@@ -197,3 +197,5 @@ The `tools` script in `/scripts/` displays all installed tools:
 - Use `tools --all` to see available but not installed tools
 - Color-coded output for better readability
 - When you want to use git, you should use the jujutsu skill.
+- Use jujutsu instead of git for vcs.
+- When user says "commit", don't use git, use jujutsu skill instead

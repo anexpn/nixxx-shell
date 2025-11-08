@@ -132,8 +132,8 @@ in {
         omz = pkgs.fetchFromGitHub {
           owner = "ohmyzsh";
           repo = "ohmyzsh";
-          rev = "fcceeb666452c5a41b786f3cde9c8635ddde5448";
-          sha256 = "sha256-c929KV77wACO0AlEABwOPPz03Za8V4G7RRXalY+zfGg=";
+          rev = "90a22b61e66dbd83928be7b9739de554a5f1c09d";
+          sha256 = "sha256-ODtuQ/jqo0caw4l/8tUe/1TizAaAA/bSqZhIEjSuVi8=";
         };
         plugins = [
           "git"
