@@ -7,10 +7,10 @@
   ...
 }:
 with lib; let
-  cfg = config.programs.tmux.extended;
+  cfg = config.shell.tmux;
 in {
   options = {
-    programs.tmux.extended = {
+    shell.tmux = {
       enable = mkEnableOption "Extended tmux configuration" // {
         description = ''
           Extended tmux configuration with plugins, Neovim integration,

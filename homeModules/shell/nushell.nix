@@ -5,10 +5,10 @@
   ...
 }:
 with lib; let
-  cfg = config.programs.nushell.extended;
+  cfg = config.shell.nushell;
 in {
   options = {
-    programs.nushell.extended = {
+    shell.nushell = {
       enable = mkEnableOption "Extended Nushell configuration";
     };
   };

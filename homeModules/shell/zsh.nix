@@ -5,10 +5,10 @@
   ...
 }:
 with lib; let
-  cfg = config.programs.zsh.extended;
+  cfg = config.shell.zsh;
 in {
   options = {
-    programs.zsh.extended = {
+    shell.zsh = {
       enable = mkEnableOption "Extended Zsh configuration" // {
         description = ''
           Enable enhanced Zsh configuration with Oh My Zsh integration.

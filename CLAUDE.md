@@ -67,9 +67,9 @@ Each module follows the standard Home Manager pattern:
 The modules are designed to be composable with multiple configuration approaches:
 
 ### Shell Configuration
-- `programs.zsh.extended.enable` - Enhanced Zsh with Oh My Zsh
-- `programs.nushell.extended.enable` - Nushell with git aliases
-- `programs.tmux.extended.enable` - Tmux with plugins and Neovim integration
+- `shell.zsh.enable` - Enhanced Zsh with Oh My Zsh
+- `shell.nushell.enable` - Nushell with git aliases
+- `shell.tmux.enable` - Tmux with plugins and Neovim integration
 - `shell.nb.enable` - Note-taking toolkit
 
 ### Tool Configuration (Multiple Approaches)

@@ -10,32 +10,38 @@ in {
   options = {
     shell.scenarios = {
       daily-driver = {
-        enable = mkEnableOption "Daily driver configuration" // {
-          description = ''
-            Full-featured setup for primary development machine.
-            Includes all productivity tools, editors, multiplexers, and monitoring.
-          '';
-        };
+        enable =
+          mkEnableOption "Daily driver configuration"
+          // {
+            description = ''
+              Full-featured setup for primary development machine.
+              Includes all productivity tools, editors, multiplexers, and monitoring.
+            '';
+          };
       };
-      
+
       container = {
-        enable = mkEnableOption "Container/minimal configuration" // {
-          description = ''
-            Lightweight setup for containers and minimal environments.
-            Focus on essential tools with small footprint.
-          '';
-        };
+        enable =
+          mkEnableOption "Container/minimal configuration"
+          // {
+            description = ''
+              Lightweight setup for containers and minimal environments.
+              Focus on essential tools with small footprint.
+            '';
+          };
       };
-      
+
       remote = {
-        enable = mkEnableOption "Remote server configuration" // {
-          description = ''
-            Tools optimized for remote servers and SSH sessions.
-            Emphasizes terminal multiplexers and system monitoring.
-          '';
-        };
+        enable =
+          mkEnableOption "Remote server configuration"
+          // {
+            description = ''
+              Tools optimized for remote servers and SSH sessions.
+              Emphasizes terminal multiplexers and system monitoring.
+            '';
+          };
       };
-      
+
       language-specific = {
         rust = mkEnableOption "Rust development tools";
         node = mkEnableOption "Node.js development tools";
@@ -45,7 +51,7 @@ in {
       };
     };
   };
-  
+
   config = mkMerge [
     # Daily driver scenario
     (mkIf cfg.daily-driver.enable {
@@ -58,7 +64,7 @@ in {
         terminal.enable = mkDefault true;
       };
     })
-    
+
     # Container scenario - minimal footprint
     (mkIf cfg.container.enable {
       shell.tools = {
@@ -70,7 +76,7 @@ in {
         terminal.enable = mkDefault false;
       };
     })
-    
+
     # Remote server scenario
     (mkIf cfg.remote.enable {
       shell.tools = {
@@ -82,7 +88,7 @@ in {
         terminal.enable = mkDefault true;
       };
     })
-    
+
     # Language-specific configurations
     (mkIf cfg.language-specific.rust {
       home.packages = with pkgs; [
@@ -93,7 +99,7 @@ in {
         rustfmt
       ];
     })
-    
+
     (mkIf cfg.language-specific.node {
       home.packages = with pkgs; [
         nodejs
@@ -101,16 +107,15 @@ in {
         pnpm
       ];
     })
-    
+
     (mkIf cfg.language-specific.python {
       home.packages = with pkgs; [
         python3
-        python3Packages.pip
-        python3Packages.virtualenv
+        uv
         ruff # fast Python linter
       ];
     })
-    
+
     (mkIf cfg.language-specific.go {
       home.packages = with pkgs; [
         go
@@ -118,7 +123,7 @@ in {
         gopls
       ];
     })
-    
+
     (mkIf cfg.language-specific.devops {
       home.packages = with pkgs; [
         terraform
