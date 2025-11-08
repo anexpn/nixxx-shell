@@ -11,11 +11,22 @@ with lib; let
 in {
   options = {
     shell.tmux = {
-      enable = mkEnableOption "Extended tmux configuration" // {
+      enable =
+        mkEnableOption "Extended tmux configuration"
+        // {
+          description = ''
+            Extended tmux configuration with plugins, Neovim integration,
+            session management, and Catppuccin theming.
+          '';
+        };
+      autoStart = mkOption {
+        default = false;
+        example = true;
         description = ''
-          Extended tmux configuration with plugins, Neovim integration,
-          session management, and Catppuccin theming.
+          Whether to automatically start or attach to a tmux session when opening a shell.
+          When enabled, creates or attaches to a session named after the current user.
         '';
+        type = types.bool;
       };
     };
   };
@@ -102,6 +113,8 @@ in {
         bind-key -T copy-mode-vi 'C-k' select-pane -U
         bind-key -T copy-mode-vi 'C-l' select-pane -R
         bind-key -T copy-mode-vi 'C-\' select-pane -l
+
+        bind-key C command-prompt -p "Name of new window:" "new-window -n '%%'"
       '';
     };
   };

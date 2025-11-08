@@ -33,6 +33,13 @@ in {
       {
         enable = true;
         initContent = ''
+          ${optionalString (config.shell.tmux.enable or false && config.shell.tmux.autoStart or false) ''
+            # Auto-start tmux session
+            if [[ -z "$TMUX_PANE" ]]; then
+              tmux new-session -A -s "''${USER}"
+            fi
+          ''}
+
           # Daily tool tip - show once per day
           show_daily_tip() {
             local tip_file="$HOME/.cache/nixxx-shell-tip"
