@@ -81,11 +81,9 @@ in {
         # Basic configuration validation - tool alternative validation is handled by individual modules
       ];
       
-      # Enhanced tools and project detection scripts
+      # Tools discovery script
       home.packages = [
-        (pkgs.writeShellScriptBin "tools" (builtins.readFile ../../scripts/tools))
-        (pkgs.writeShellScriptBin "tools-enhanced" (builtins.readFile ../../scripts/tools-enhanced))
-        (pkgs.writeShellScriptBin "project-detect" (builtins.readFile ../../scripts/project-detect))
+        (pkgs.writeScriptBin "tools" (builtins.readFile ../../scripts/tools))
       ];
     })
   ];

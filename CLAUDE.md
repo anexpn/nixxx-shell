@@ -20,9 +20,8 @@ The project follows a modular structure with Home Manager modules:
   - `shell/tools-*.nix` - Modular tool category modules (core, development, monitoring, etc.)
   - `shell/tools-scenarios.nix` - Scenario-based tool configurations
   - `shell/nb.nix` - Note-taking tools and utilities
-- `scripts/` - Utility scripts for tool discovery and project detection
-  - `tools` - Enhanced tools overview and discovery script
-  - `project-detect` - Smart project type detection and tool suggestions
+- `scripts/` - Utility scripts
+  - `tools` - Ruby script to display installed tools from the flake
 
 ## Key Commands
 
@@ -51,16 +50,11 @@ nix-instantiate --parse <file.nix>
 Scripts can be tested by including them in your shell configuration:
 
 ```bash
-# Test enhanced tools discovery
+# Show installed tools
 tools
-tools alternatives
-tools scenarios
-tools categories
 
-# Test project detection
-project-detect
-project-detect type
-project-detect help
+# Show all tools (installed and available)
+tools --all
 ```
 
 ## Module Structure
@@ -144,56 +138,30 @@ The flake supports multiple platforms via the `systems` attribute:
 - x86_64-linux, aarch64-linux
 - x86_64-darwin, aarch64-darwin (macOS)
 
-## Enhanced Tools and Discovery
-
-### Tool Categories
+## Tool Categories
 
 **Core Tools** (Essential daily-use replacements):
 - **File operations**: eza (ls), bat (cat), fd (find), ripgrep (grep)
 - **System monitoring**: duf (df), du-dust (du), procs (ps)
 - **Text processing**: sd (sed), choose (cut), jq (JSON)
 - **Navigation**: fzf/skim (fuzzy finder), zoxide (smart cd)
+- **Scripting**: ruby
 
 **Development Tools**:
 - **Version control**: git with delta, lazygit/tig, gh, gitleaks
 - **Editors**: helix (modal editor)
 - **Analysis**: shellcheck, tokei/scc (code counter), hyperfine
 - **Build tools**: just (make alternative), direnv
+- **AI**: aichat
 
 **Monitoring & Network**:
-- **System**: btop, bandwhich, gping, broot
+- **System**: btop, bandwhich, gping
 - **HTTP**: httpie, curl
 - **Logs**: lnav
 
 **Database & Query**: sqlite, dsq, xsv
-**Container & Cloud**: dive, ctop, k9s (Linux)
-**Terminal Productivity**: starship, zellij, tmux, mcfly
-
-### Smart Discovery System
-
-#### Enhanced Tools Script
-```bash
-tools                    # Show all available tools
-tools alternatives       # Show tool alternatives and options
-tools scenarios          # Show usage scenarios (daily-driver, container, remote)
-tools categories         # Show tool categories
-tools search <keyword>   # Search for tools by keyword
-tools demo <tool>        # Show live demo of a tool
-tools config             # Show configuration examples
-```
-
-#### Automatic Project Detection
-```bash
-project-detect           # Analyze current directory for project type
-project-detect type      # Just show detected project types
-```
-
-**Smart features**:
-- Auto-detects project types (Rust, Node.js, Python, Go, Nix, Docker, Terraform)
-- Suggests relevant tools and commands
-- Provides project-specific aliases
-- Auto-runs when entering project directories (via enhanced `cd`)
-- Generates `.envrc` for Nix projects
+**Container & Cloud**: dive, ctop, podman, k9s (Linux)
+**Terminal Productivity**: starship, zellij, tmux, mcfly, kitty
 
 ### Compatibility & Migration
 
@@ -206,11 +174,6 @@ cut → choose
 ```
 
 **Note**: `find`, `grep`, and `cd` are NOT aliased to preserve traditional behavior. Use `fd`, `rg`, and `z` explicitly if desired.
-
-**Migration assistance**:
-- Daily tips system shows modern tool alternatives
-- Context-aware suggestions based on project type
-- Progressive disclosure of advanced features
 
 ## Development Environment
 
@@ -226,8 +189,8 @@ When adding new modules or tools:
 
 ### Script Integration
 
-Scripts in `/scripts/` can be included in shell configurations:
-- Scripts use bash with `set -euo pipefail` for strict error handling
-- Color output using ANSI codes for better UX
-- Structured help systems with `command help` pattern
-- Project detection uses file-based heuristics for accuracy
+The `tools` script in `/scripts/` displays all installed tools:
+- Written in Ruby for simplicity
+- Shows only installed tools by default
+- Use `tools --all` to see available but not installed tools
+- Color-coded output for better readability

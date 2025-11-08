@@ -66,6 +66,9 @@ in {
         # File Management
         trash-cli # safe deletion
         ouch # universal archive tool
+
+        # Scripting
+        ruby # Ruby interpreter
       ]
       ++
       # Alternative fuzzy finders
