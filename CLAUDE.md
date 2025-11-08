@@ -16,6 +16,7 @@ The project follows a modular structure with Home Manager modules:
   - `shell/default.nix` - Imports all shell-related modules
   - `shell/zsh.nix` - Extended Zsh configuration with Oh My Zsh
   - `shell/nushell.nix` - Extended Nushell with git aliases and custom functions
+  - `shell/tmux.nix` - Extended tmux configuration with plugins and Neovim integration
   - `shell/tools.nix` - Main tools module with legacy simple mode
   - `shell/tools-*.nix` - Modular tool category modules (core, development, monitoring, etc.)
   - `shell/tools-scenarios.nix` - Scenario-based tool configurations
@@ -68,6 +69,7 @@ The modules are designed to be composable with multiple configuration approaches
 ### Shell Configuration
 - `programs.zsh.extended.enable` - Enhanced Zsh with Oh My Zsh
 - `programs.nushell.extended.enable` - Nushell with git aliases
+- `programs.tmux.extended.enable` - Tmux with plugins and Neovim integration
 - `shell.nb.enable` - Note-taking toolkit
 
 ### Tool Configuration (Multiple Approaches)
@@ -194,3 +196,4 @@ The `tools` script in `/scripts/` displays all installed tools:
 - Shows only installed tools by default
 - Use `tools --all` to see available but not installed tools
 - Color-coded output for better readability
+- When you want to use git, you should use the jujutsu skill.
