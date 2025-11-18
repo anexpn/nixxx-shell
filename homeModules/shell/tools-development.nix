@@ -76,10 +76,13 @@ in {
       {
         git = {
           enable = true;
-          delta.enable = true;
-          extraConfig = {
+          settings = {
             credential.helper = "store";
           };
+        };
+        delta = {
+          enable = true;
+          enableGitIntegration = true;
         };
         pandoc.enable = true;
         direnv = {

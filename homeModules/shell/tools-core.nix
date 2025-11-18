@@ -54,7 +54,7 @@ in {
 
         # System Monitoring
         duf # better df
-        du-dust # better du
+        dust # better du
         procs # better ps
 
         # Navigation & Search
