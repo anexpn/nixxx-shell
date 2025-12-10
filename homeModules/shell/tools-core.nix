@@ -68,7 +68,7 @@ in {
         ouch # universal archive tool
 
         # Scripting
-        ruby # Ruby interpreter
+        ruby_3_4 # Ruby interpreter
       ]
       ++
       # Alternative fuzzy finders
